@@ -1,4 +1,4 @@
-USE hotel_complex;
+USE hotel_db;
 
 CREATE TABLE IF NOT EXISTS building(
 	id VARCHAR(255) PRIMARY KEY,

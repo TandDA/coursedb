@@ -2,30 +2,43 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/TandDA/coursedb/internal/handler"
+	"github.com/TandDA/coursedb/internal/repository"
+	"github.com/TandDA/coursedb/internal/service"
 	"github.com/golang-migrate/migrate/v4"
-	"github.com/golang-migrate/migrate/v4/database/mysql"
+	"github.com/golang-migrate/migrate/v4/database/postgres"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
+	_ "github.com/lib/pq"
 )
 
 func main() {
-	db, err := sql.Open("mysql", "root:root@tcp(127.0.0.1:3306)/hotel_db?multiStatements=true")
+	db, err := sql.Open("postgres", "postgres://postgres:123@localhost:5432/postgres?sslmode=disable")
 	if err != nil {
 		log.Fatal(err)
 	}
 	doMigration(db)
+	repo := repository.NewRepository(db)
+	srvc := service.NewService(repo)
+	hndl := handler.NewHandler(srvc)
 
+	hndl.Start()
 }
 
 func doMigration(db *sql.DB) {
-	driver, _ := mysql.WithInstance(db, &mysql.Config{})
-	m, _ := migrate.NewWithDatabaseInstance(
+	driver, err := postgres.WithInstance(db, &postgres.Config{})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	m, err := migrate.NewWithDatabaseInstance(
 		"file://migrations",
-		"mysql",
-		driver,
-	)
-
-	m.Steps(2)
+		"postgres", driver)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	m.Up()
 }

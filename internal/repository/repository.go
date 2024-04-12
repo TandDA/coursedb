@@ -18,4 +18,7 @@ func NewRepository(db *sql.DB) *Repository {
 
 type Building interface {
 	Save(b model.Building) (string, error)
+	GetAll() ([]model.Building, error)
+	Update(bld model.Building) error
+	Delete(id string) error
 }

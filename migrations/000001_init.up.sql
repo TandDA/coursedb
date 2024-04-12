@@ -1,16 +1,14 @@
-USE hotel_db;
-
 CREATE TABLE IF NOT EXISTS building(
 	id VARCHAR(255) PRIMARY KEY,
-    class TINYINT UNSIGNED,
-    number_of_floors SMALLINT UNSIGNED,
+    class smallint,
+    number_of_floors smallint,
     address VARCHAR(255)
 );
 
 CREATE TABLE IF NOT EXISTS floor(
 	id VARCHAR(255) PRIMARY KEY,
-    floor_number SMALLINT UNSIGNED,
-    number_of_rooms SMALLINT UNSIGNED,
+    floor_number SMALLINT,
+    number_of_rooms SMALLINT,
     building_id VARCHAR(255),
     FOREIGN KEY (building_id)  REFERENCES building (id)
 );
@@ -33,8 +31,8 @@ CREATE TABLE IF NOT EXISTS housekeeping_service_details(
 
 CREATE TABLE IF NOT EXISTS room(
 	id VARCHAR(255) PRIMARY KEY,
-    is_free BOOL,
-	number_of_rooms SMALLINT UNSIGNED,
+    is_free boolean,
+	number_of_rooms SMALLINT,
     regular_price DECIMAL,
     floor_id VARCHAR(255),
     FOREIGN KEY (floor_id)  REFERENCES floor (id)

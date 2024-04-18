@@ -6,19 +6,25 @@ import (
 	"github.com/TandDA/coursedb/internal/model"
 )
 
-type Repository struct {
-	Building
-}
-
-func NewRepository(db *sql.DB) *Repository {
-	return &Repository{
-		Building: NewBuildingRepository(db),
-	}
-}
-
 type Building interface {
 	Save(b model.Building) (string, error)
 	GetAll() ([]model.Building, error)
 	Update(bld model.Building) error
 	Delete(id string) error
+}
+
+type Room interface {
+	GetAllFreeRooms() ([]model.Room, error)
+}
+
+type Repository struct {
+	Building
+	Room
+}
+
+func NewRepository(db *sql.DB) *Repository {
+	return &Repository{
+		Building: NewBuildingRepository(db),
+		Room: NewRoomRepository(db),
+	}
 }

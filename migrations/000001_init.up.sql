@@ -8,16 +8,15 @@ CREATE TABLE IF NOT EXISTS building(
 CREATE TABLE IF NOT EXISTS floor(
 	id VARCHAR(255) PRIMARY KEY,
     floor_number SMALLINT,
-    number_of_rooms SMALLINT,
     building_id VARCHAR(255),
-    FOREIGN KEY (building_id)  REFERENCES building (id)
+    FOREIGN KEY (building_id)  REFERENCES building (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS housekeeping_services(
 	id VARCHAR(255) PRIMARY KEY,
     service_name VARCHAR(255),
     floor_id VARCHAR(255),
-    FOREIGN KEY (floor_id)  REFERENCES floor (id)
+    FOREIGN KEY (floor_id)  REFERENCES floor (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS housekeeping_service_details(
@@ -31,11 +30,10 @@ CREATE TABLE IF NOT EXISTS housekeeping_service_details(
 
 CREATE TABLE IF NOT EXISTS room(
 	id VARCHAR(255) PRIMARY KEY,
-    is_free boolean,
 	number_of_rooms SMALLINT,
     regular_price DECIMAL,
     floor_id VARCHAR(255),
-    FOREIGN KEY (floor_id)  REFERENCES floor (id)
+    FOREIGN KEY (floor_id)  REFERENCES floor (id) ON DELETE CASCADE
 );
 
 CREATE TABLE IF NOT EXISTS guest(
@@ -49,17 +47,7 @@ CREATE TABLE IF NOT EXISTS complain(
 	id VARCHAR(255) PRIMARY KEY,
     complain_text TEXT,
 	guest_id VARCHAR(255),
-    FOREIGN KEY (guest_id)  REFERENCES guest (id)
-);
-
-CREATE TABLE IF NOT EXISTS booking(
-	id VARCHAR(255) PRIMARY KEY,
-    date_of_entry DATE,
-    date_of_departure DATE,
-	guest_id VARCHAR(255),
-    room_id VARCHAR(255),
-    FOREIGN KEY (guest_id)  REFERENCES guest (id),
-    FOREIGN KEY (room_id)  REFERENCES room (id)
+    FOREIGN KEY (guest_id)  REFERENCES guest (id) ON DELETE CASCADE
 );
 
 CREATE TABLE firm(
@@ -67,17 +55,14 @@ CREATE TABLE firm(
     name VARCHAR(255)
 );
 
-CREATE TABLE firm_booking_request(
+CREATE TABLE IF NOT EXISTS booking(
 	id VARCHAR(255) PRIMARY KEY,
+    date_of_entry DATE,
+    date_of_departure DATE,
+	guest_id VARCHAR(255),
     firm_id VARCHAR(255),
-	FOREIGN KEY (firm_id)  REFERENCES firm (id)
+    room_id VARCHAR(255),
+    FOREIGN KEY (guest_id)  REFERENCES guest (id) ON DELETE CASCADE,
+    FOREIGN KEY (firm_id)  REFERENCES firm (id) ON DELETE CASCADE,
+    FOREIGN KEY (room_id)  REFERENCES room (id) ON DELETE CASCADE
 );
-
-CREATE TABLE firm_booking(
-	firm_booking_id VARCHAR(255),
-    booking_id VARCHAR(255),
-    PRIMARY KEY (firm_booking_id, booking_id),
-    FOREIGN KEY(booking_id) REFERENCES booking(id),
-	FOREIGN KEY(firm_booking_id) REFERENCES firm_booking_request(id)
-);	
-

@@ -46,5 +46,15 @@ func (h *Handler) updateBuilding(c echo.Context) error {
 }
 
 func (h *Handler) deleteBuilding(c echo.Context) error {
-	return nil
+	var idStruct struct {
+		Id string `json:"id"`
+	}
+	if err := c.Bind(&idStruct); err != nil {
+		return c.JSON(http.StatusBadRequest, map[string]string{"err": err.Error()})
+	}
+	err := h.service.Building.Delete(idStruct.Id)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"err": err.Error()})
+	}
+	return c.NoContent(http.StatusOK)
 }

@@ -25,5 +25,5 @@ type Building interface {
 }
 
 type Room interface {
-	GetAllFreeRooms() ([]model.Room, error)
+	GetAllFreeRooms(floorNumber, class, numberOfRooms int) ([]model.Room, error)
 }

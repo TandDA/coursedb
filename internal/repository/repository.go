@@ -14,7 +14,7 @@ type Building interface {
 }
 
 type Room interface {
-	GetAllFreeRooms() ([]model.Room, error)
+	GetAllFreeRooms(floorNumber, class, numberOfRooms int) ([]model.Room, error)
 }
 
 type Repository struct {
@@ -25,6 +25,6 @@ type Repository struct {
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
 		Building: NewBuildingRepository(db),
-		Room: NewRoomRepository(db),
+		Room:     NewRoomRepository(db),
 	}
 }

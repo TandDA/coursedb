@@ -24,6 +24,7 @@ func (h *Handler) Start() {
 	roomGroup := e.Group("/room")
 	roomGroup.GET("/free", h.getAllFreeRooms)
 
+	e.GET("/guest", h.getAllGuests)
 	guestGroup := e.Group("/guest")
 	guestGroup.GET("/complains", h.getAllGuestsWithComplains)
 

@@ -31,5 +31,6 @@ type Room interface {
 }
 
 type Guest interface {
+	GetAll(from, to string) ([]model.Guest, error)
 	GetAllGuestsWithComplains() ([]model.GuestAndComplain, error)
 }

@@ -14,6 +14,13 @@ type Room struct {
 	FloorId       string `json:"floor_id"`
 }
 
+type Guest struct {
+	Id          string `json:"id,omitempty"`
+	FirstName   string `json:"first_name,omitempty"`
+	LastName    string `json:"last_name,omitempty"`
+	DateOfEntry string `json:"date_of_entry" json:"date_of_entry,omitempty"`
+}
+
 type Complain struct {
 	Id           string `json:"id"`
 	ComplainText string `json:"complain_text"`

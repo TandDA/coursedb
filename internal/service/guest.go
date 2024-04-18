@@ -16,3 +16,7 @@ func NewGuestService(repo repository.Guest) *GuestService {
 func (s *GuestService) GetAllGuestsWithComplains() ([]model.GuestAndComplain, error) {
 	return s.repo.GetAllGuestsWithComplains()
 }
+
+func (s *GuestService) GetAll(from, to string) ([]model.Guest, error) {
+	return s.repo.GetAll(from, to)
+}

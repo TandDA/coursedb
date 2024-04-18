@@ -8,12 +8,14 @@ import (
 type Service struct {
 	Building
 	Room
+	Guest
 }
 
 func NewService(r *repository.Repository) *Service {
 	return &Service{
 		Building: NewBuildingService(r.Building),
 		Room:     NewRoomService(r.Room),
+		Guest:    NewGuestService(r.Guest),
 	}
 }
 
@@ -26,4 +28,8 @@ type Building interface {
 
 type Room interface {
 	GetAllFreeRooms(floorNumber, class, numberOfRooms int) ([]model.Room, error)
+}
+
+type Guest interface {
+	GetAllGuestsWithComplains() ([]model.GuestAndComplain, error)
 }

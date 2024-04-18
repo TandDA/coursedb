@@ -2,7 +2,6 @@ package repository
 
 import (
 	"database/sql"
-
 	"github.com/TandDA/coursedb/internal/model"
 )
 
@@ -17,14 +16,20 @@ type Room interface {
 	GetAllFreeRooms(floorNumber, class, numberOfRooms int) ([]model.Room, error)
 }
 
+type Guest interface {
+	GetAllGuestsWithComplains() ([]model.GuestAndComplain, error)
+}
+
 type Repository struct {
 	Building
 	Room
+	Guest
 }
 
 func NewRepository(db *sql.DB) *Repository {
 	return &Repository{
 		Building: NewBuildingRepository(db),
 		Room:     NewRoomRepository(db),
+		Guest:    NewGuestRepository(db),
 	}
 }

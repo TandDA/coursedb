@@ -23,6 +23,10 @@ func (h *Handler) Start() {
 
 	roomGroup := e.Group("/room")
 	roomGroup.GET("/free", h.getAllFreeRooms)
+
+	guestGroup := e.Group("/guest")
+	guestGroup.GET("/complains", h.getAllGuestsWithComplains)
+
 	err := e.Start(":8080")
 	if err != nil {
 		log.Print(err)

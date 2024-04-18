@@ -3,6 +3,7 @@ package handler
 import (
 	"github.com/TandDA/coursedb/internal/service"
 	"github.com/labstack/echo/v4"
+	"log"
 )
 
 type Handler struct {
@@ -19,5 +20,11 @@ func (h *Handler) Start() {
 	e.GET("/building", h.getAllBuilding)
 	e.PUT("/building", h.updateBuilding)
 	e.DELETE("/building", h.deleteBuilding)
-	e.Start(":8080")
+
+	roomGroup := e.Group("/room")
+	roomGroup.GET("/free", h.getAllFreeRooms)
+	err := e.Start(":8080")
+	if err != nil {
+		log.Print(err)
+	}
 }

@@ -7,11 +7,13 @@ import (
 
 type Service struct {
 	Building
+	Room
 }
 
 func NewService(r *repository.Repository) *Service {
 	return &Service{
 		Building: NewBuildingService(r.Building),
+		Room:     NewRoomService(r.Room),
 	}
 }
 
@@ -20,4 +22,8 @@ type Building interface {
 	GetAll() ([]model.Building, error)
 	Update(bld model.Building) error
 	Delete(id string) error
+}
+
+type Room interface {
+	GetAllFreeRooms() ([]model.Room, error)
 }

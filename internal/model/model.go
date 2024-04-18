@@ -8,8 +8,8 @@ type Building struct {
 }
 
 type Room struct {
-	Id             string  `json:"id"`
-	NumberOfRooms          int    `json:"number_of_rooms"`
-	RegularPrice int    `json:"regular_price"`
-	FloorId        string `json:"floor_id"`
+	Id            string `json:"id"`
+	NumberOfRooms int    `json:"number_of_rooms"`
+	RegularPrice  int    `json:"regular_price"`
+	FloorId       string `json:"floor_id"`
 }

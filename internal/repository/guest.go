@@ -37,7 +37,6 @@ JOIN complain c ON c.guest_id = g.id `
 }
 
 func (r *GuestRepository) GetAll(from, to string) ([]model.Guest, error) {
-	// Парсим строки в формат даты
 	f, err := time.Parse("2006.01.02", from)
 	if err != nil {
 		return nil, err
@@ -47,7 +46,6 @@ func (r *GuestRepository) GetAll(from, to string) ([]model.Guest, error) {
 		return nil, err
 	}
 
-	// Форматируем даты для SQL запроса
 	fromDate := f.Format("2006-01-02")
 	toDate := t.Format("2006-01-02")
 	query := `SELECT g.* FROM guest g

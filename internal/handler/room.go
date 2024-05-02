@@ -1,10 +1,16 @@
 package handler
 
 import (
-	"github.com/labstack/echo/v4"
 	"net/http"
 	"strconv"
+
+	"github.com/labstack/echo/v4"
 )
+
+type RoomDate struct {
+	DateOfEntry     string `json:"date_of_entry"`
+	DateOfDeparture string `json:"date_of_departure"`
+}
 
 func (h *Handler) getAllFreeRooms(c echo.Context) error {
 	floorNumber := getIntNullableParam(c, "floor_number")
@@ -23,4 +29,40 @@ func getIntNullableParam(c echo.Context, name string) int {
 		return -1
 	}
 	return param
+}
+
+func (h *Handler) getFreeRoomInfo(c echo.Context) error {
+	id := c.QueryParam("id")
+	query := `
+	SELECT date_of_entry, date_of_departure FROM room r
+	JOIN booking b ON r.id = b.room_id
+	WHERE r.id = $1
+	AND NOW() < date_of_departure
+	
+	`
+	rows, _ := h.db.Query(query, id)
+	dates := []RoomDate{}
+	for rows.Next() {
+		var date RoomDate
+		err := rows.Scan(&date.DateOfEntry, &date.DateOfDeparture)
+		if err != nil {
+			return c.String(400, err.Error())
+		}
+		dates = append(dates, date)
+	}
+	return c.JSON(http.StatusOK, dates)
+}
+
+func (h *Handler) getPercentage(c echo.Context) error {
+	query := `
+	SELECT 
+  COUNT(*) FILTER (WHERE firm_id IS NOT NULL) * 100.0 / COUNT(*) AS percentage
+FROM 
+  booking;
+
+	`
+	row := h.db.QueryRow(query)
+	var perc float64
+	row.Scan(&perc)
+	return c.JSON(200, perc)
 }

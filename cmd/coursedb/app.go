@@ -22,7 +22,7 @@ func main() {
 	doMigration(db)
 	repo := repository.NewRepository(db)
 	srvc := service.NewService(repo)
-	hndl := handler.NewHandler(srvc)
+	hndl := handler.NewHandler(srvc, db)
 
 	hndl.Start()
 }

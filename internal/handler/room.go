@@ -66,3 +66,29 @@ FROM
 	row.Scan(&perc)
 	return c.JSON(200, perc)
 }
+
+func (h *Handler) getFreeRoomInfoWithDate(c echo.Context) error {
+	roomId := c.QueryParam("room_id")
+	dateOfEntry := c.QueryParam("date_of_entry")
+	dateOfDeparture := c.QueryParam("date_of_departure")
+	query := `
+	SELECT date_of_entry, date_of_departure FROM public.booking
+WHERE room_id = $1
+AND (
+	date_of_entry BETWEEN $2::date AND $3::date
+	OR
+	date_of_departure BETWEEN $2::date AND $3::date
+);
+	`
+	rows, _ := h.db.Query(query, roomId, dateOfEntry, dateOfDeparture)
+	dates := []RoomDate{}
+	for rows.Next() {
+		var date RoomDate
+		err := rows.Scan(&date.DateOfEntry, &date.DateOfDeparture)
+		if err != nil {
+			return c.String(400, err.Error())
+		}
+		dates = append(dates, date)
+	}
+	return c.JSON(http.StatusOK, dates)
+}

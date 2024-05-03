@@ -10,7 +10,7 @@ import (
 
 type Handler struct {
 	service *service.Service
-	db *sql.DB
+	db      *sql.DB
 }
 
 func NewHandler(service *service.Service, db *sql.DB) *Handler {
@@ -27,11 +27,13 @@ func (h *Handler) Start() {
 	roomGroup := e.Group("/room")
 	roomGroup.GET("/free", h.getAllFreeRooms)
 	roomGroup.GET("/free-detail", h.getFreeRoomInfo)
+	roomGroup.GET("/date", h.getFreeRoomInfoWithDate)
 	roomGroup.GET("/percentage", h.getPercentage)
 
 	e.GET("/guest", h.getAllGuests)
 	guestGroup := e.Group("/guest")
 	guestGroup.GET("/complains", h.getAllGuestsWithComplains)
+	guestGroup.GET("/popular", h.getAllPopularGuest)
 
 	err := e.Start(":8080")
 	if err != nil {

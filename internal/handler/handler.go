@@ -24,6 +24,9 @@ func (h *Handler) Start() {
 	e.PUT("/building", h.updateBuilding)
 	e.DELETE("/building", h.deleteBuilding)
 
+	firmGroup := e.Group("/firm")
+	firmGroup.GET("/date", h.getAllFirmWithBooikingParams)
+
 	roomGroup := e.Group("/room")
 	roomGroup.GET("/free", h.getAllFreeRooms)
 	roomGroup.GET("/free-detail", h.getFreeRoomInfo)

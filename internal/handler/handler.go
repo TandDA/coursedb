@@ -38,6 +38,7 @@ func (h *Handler) Start() {
 	guestGroup := e.Group("/guest")
 	guestGroup.GET("/complains", h.getAllGuestsWithComplains)
 	guestGroup.GET("/popular", h.getAllPopularGuest)
+	guestGroup.GET("/booking", h.getGuestBooking)
 
 	err := e.Start(":8080")
 	if err != nil {

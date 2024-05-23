@@ -11,6 +11,13 @@ type GuestCount struct {
 	Count int `json:"count"`
 }
 
+type RoomDateAndId struct {
+	DateOfEntry     string `json:"date_of_entry"`
+	DateOfDeparture string `json:"date_of_departure"`
+	RoomId string `json:"room_id"`
+}
+
+
 func (h *Handler) getAllGuestsWithComplains(c echo.Context) error {
 	complains, err := h.service.Guest.GetAllGuestsWithComplains()
 	if err != nil {
@@ -49,6 +56,29 @@ func (h *Handler) getAllPopularGuest(c echo.Context) error {
 	for rows.Next() {
 		var a GuestCount
 		err = rows.Scan(&a.FirstName, &a.LastName, &a.Count)
+		if err != nil {
+			return c.String(400, err.Error())
+		}
+		ans = append(ans, a)
+	}
+	return c.JSON(http.StatusOK, ans)
+}
+
+func (h *Handler) getGuestBooking(c echo.Context) error {
+	query := `
+	SELECT b.date_of_entry, b.date_of_departure, b.room_id FROM guest AS g
+JOIN booking AS b ON b.guest_id = g.id
+WHERE g.id = $1
+	`
+	id := c.QueryParam("id")
+	rows, err := h.db.Query(query, id)
+	if err != nil {
+		return c.JSON(500, err.Error())
+	}
+	var ans []RoomDateAndId
+	for rows.Next() {
+		var a RoomDateAndId
+		err = rows.Scan(&a.DateOfEntry, &a.DateOfDeparture, &a.RoomId)
 		if err != nil {
 			return c.String(400, err.Error())
 		}

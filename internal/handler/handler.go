@@ -26,6 +26,7 @@ func (h *Handler) Start() {
 
 	firmGroup := e.Group("/firm")
 	firmGroup.GET("/date", h.getAllFirmWithBooikingParams)
+	firmGroup.GET("/count", h.getFirmsBookingCount)
 
 	roomGroup := e.Group("/room")
 	roomGroup.GET("/free", h.getAllFreeRooms)

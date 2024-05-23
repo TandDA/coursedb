@@ -38,5 +38,27 @@ HAVING count(*) >= $3
 		}
 		firms = append(firms, str)
 	}
-	return c.JSON(http.StatusOK, map[string]any{"count": len(firms), "firms": firms})
+	return c.JSON(http.StatusOK, map[string]any{"firms": firms})
+}
+
+func (h *Handler) getFirmsBookingCount(c echo.Context) error {
+	query := `
+		SELECT count(*)
+		FROM booking b
+		JOIN firm AS f ON f.id = b.firm_id
+		WHERE ($1::date IS NULL OR $2::date IS NULL OR date_of_entry BETWEEN $1::date AND $2::date)
+		AND f.name = $3
+	`
+
+	from := c.QueryParam("from")
+	to := c.QueryParam("to")
+	firmName := c.QueryParam("name")
+
+	rows := h.db.QueryRow(query, from, to, firmName)
+	var count int
+	err := rows.Scan(&count)
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, map[string]string{"err": err.Error()})
+	}
+	return c.JSON(http.StatusOK, map[string]any{"count": count})
 }

@@ -92,3 +92,16 @@ AND (
 	}
 	return c.JSON(http.StatusOK, dates)
 }
+
+func (h *Handler) getFreeRoomsOnCertainDate(c echo.Context) error {
+	query := `
+	SELECT DISTINCT r.* FROM booking AS b
+JOIN room AS r ON r.id = b.room_id
+WHERE ($1::date NOT BETWEEN date_of_entry AND date_of_departure)
+AND (NOW()::date BETWEEN date_of_entry AND date_of_departure)
+
+	`
+	to := c.QueryParam("to")
+	rows, err := h.db.Query(query, to)
+	// TODO 6 request
+}

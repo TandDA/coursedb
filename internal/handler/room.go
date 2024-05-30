@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strconv"
 
+	"github.com/TandDA/coursedb/internal/model"
 	"github.com/labstack/echo/v4"
 )
 
@@ -96,12 +97,24 @@ AND (
 func (h *Handler) getFreeRoomsOnCertainDate(c echo.Context) error {
 	query := `
 	SELECT DISTINCT r.* FROM booking AS b
-JOIN room AS r ON r.id = b.room_id
-WHERE ($1::date NOT BETWEEN date_of_entry AND date_of_departure)
-AND (NOW()::date BETWEEN date_of_entry AND date_of_departure)
+	JOIN room AS r ON r.id = b.room_id
+	WHERE ($1::date NOT BETWEEN date_of_entry AND date_of_departure)
+	AND (NOW()::date BETWEEN date_of_entry AND date_of_departure)
 
 	`
 	to := c.QueryParam("to")
 	rows, err := h.db.Query(query, to)
-	// TODO 6 request
+	if err != nil {
+		return c.String(400, err.Error())
+	}
+	rooms := make([]model.Room, 0)
+	for rows.Next() {
+		var room model.Room
+		err = rows.Scan(&room.Id, &room.NumberOfRooms, &room.RegularPrice, &room.FloorId)
+		if err != nil {
+			return c.String(400, err.Error())
+		}
+		rooms = append(rooms, room)
+	}
+	return c.JSON(http.StatusOK, rooms)
 }

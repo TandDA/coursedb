@@ -33,6 +33,7 @@ func (h *Handler) Start() {
 	roomGroup.GET("/free-detail", h.getFreeRoomInfo)
 	roomGroup.GET("/date", h.getFreeRoomInfoWithDate)
 	roomGroup.GET("/percentage", h.getPercentage)
+	roomGroup.GET("/todate", h.getFreeRoomsOnCertainDate)
 
 	e.GET("/guest", h.getAllGuests)
 	guestGroup := e.Group("/guest")
